@@ -1,0 +1,28 @@
+{
+  "name": "Expo Preview",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "forwardPorts": [
+    8081,
+    19000,
+    19001,
+    19002
+  ],
+  "postCreateCommand": "npm install",
+  "postStartCommand": "npx expo start --tunnel --non-interactive",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "expo.vscode-expo-tools"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "EXPO_DEVTOOLS_LISTEN_ADDRESS": "0.0.0.0",
+    "CI": "1"
+  }
+}
