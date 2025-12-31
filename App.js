@@ -56,9 +56,14 @@ export default function App() {
   }, [showOnboarding]);
 
   const handleScroll = (event) => {
+    if (!event?.nativeEvent?.contentOffset) return;
+    
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const index = Math.round(scrollPosition / width);
-    setCurrentIndex(index);
+    
+    // Ensure index is within bounds
+    const boundedIndex = Math.max(0, Math.min(index, onboardingData.length - 1));
+    setCurrentIndex(boundedIndex);
   };
 
   const goToNext = () => {
@@ -71,6 +76,8 @@ export default function App() {
   };
 
   const renderIcon = (item) => {
+    if (!item?.icon || !item?.iconSet) return null;
+    
     const IconComponent = item.iconSet === 'MaterialIcons' ? MaterialIcons : Feather;
     return <IconComponent name={item.icon} size={80} color="rgba(255, 255, 255, 0.9)" />;
   };
@@ -117,13 +124,13 @@ export default function App() {
           style={styles.scrollView}
         >
           {onboardingData.map((item, index) => (
-            <View key={item.id} style={styles.onboardingScreen}>
+            <View key={`onboarding-${item.id}-${index}`} style={styles.onboardingScreen}>
               <View style={styles.onboardingContent}>
                 <View style={styles.iconContainer}>
                   {renderIcon(item)}
                 </View>
-                <Text style={styles.onboardingTitle}>{item.title}</Text>
-                <Text style={styles.onboardingDescription}>{item.description}</Text>
+                <Text style={styles.onboardingTitle}>{item.title || ''}</Text>
+                <Text style={styles.onboardingDescription}>{item.description || ''}</Text>
               </View>
             </View>
           ))}
@@ -133,7 +140,7 @@ export default function App() {
           <View style={styles.pagination}>
             {onboardingData.map((_, index) => (
               <View
-                key={index}
+                key={`pagination-${index}`}
                 style={[
                   styles.paginationDot,
                   currentIndex === index && styles.paginationDotActive,
